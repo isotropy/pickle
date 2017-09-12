@@ -1,0 +1,31 @@
+.App {
+    text-align: center;
+  }
+  
+.App-header h2{
+  background-color: #222;
+  height: 40px;
+  color: white;
+  margin: 0;
+}
+
+.columns > div {
+  float: left;
+  height: 100vh;
+}
+
+.columns .side-menu {
+  width: 5%;
+  background-color: #888686;
+}
+
+.columns .file-tree {
+  width: 20%;
+  background-color: #4e4d4d;
+}
+
+.columns .editor {
+  width: 75%;
+  background-color: #3e3d3d;
+}
+  

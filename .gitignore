@@ -29,8 +29,12 @@ node_modules
 
 #Nothing in dist
 dist/*
+build/*
 
 #flow-errors
 flow-errors.txt
 
 lib/
+
+# BSB auto-generated file
+.merlin

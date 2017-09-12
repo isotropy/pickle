@@ -1,7 +1,20 @@
 {
   "name": "reason-scripts",
   "sources": [
-    "src"
+    {
+      "dir": "src",
+      "subdirs": [
+        {
+          "dir": "app",
+          "subdirs": [
+            {
+              "dir": "ui",
+              "subdirs": [ "editor", "file-tree", "side-menu" ]
+            }
+          ]
+        }
+      ]
+    }
   ],
   "bs-dependencies": [
     "reason-react",
