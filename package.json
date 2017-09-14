@@ -5,7 +5,8 @@
   "dependencies": {
     "bs-platform": "1.9.1",
     "react": "^15.6.1",
-    "react-dom": "^15.6.1"
+    "react-dom": "^15.6.1",
+    "monaco-editor": "^0.10.0"
   },
   "scripts": {
     "start": "node scripts/start.js",
