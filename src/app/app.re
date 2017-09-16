@@ -1,16 +1,27 @@
 [%bs.raw {|require('./app.css')|}];
 
-let component = ReasonReact.statelessComponent "App";
+type action =
+  | SetActivePanel activePanel;
+
+type state = {activePanel: int};
+
+let setActivePanel activePanel => SetActivePanel activePanel;
+
+let component = ReasonReact.reducerComponent "App";
 
 let make _children => {
   ...component,
-  render: fun _self =>
+  initialState: fun () => {activePanel: 0},
+  reducer: fun action state =>
+    switch action {
+    | SetActivePanel panelNo => ReasonReact.Update {...state, activePanel: panelNo}
+    },
+  render: fun {state, reduce} =>
     <div className="App">
-      <div className="App-header">
-        <h2> (ReasonReact.stringToElement "Pickle") </h2>
-      </div>
+      <div className="App-header"> <h2> (ReasonReact.stringToElement "Pickle") </h2> </div>
       <div className="columns">
-        <SideMenu />
+        <SideMenu setActive=(reduce (setActivePanel activePanel)) />
+        <Settings />
         <FileTree />
         <Editor />
       </div>

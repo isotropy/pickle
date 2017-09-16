@@ -28,13 +28,12 @@ let loadMonacoEditor: unit => unit = [%bs.raw
      }
  |}
  ]; */
- 
-  let onMonacoLoaded: unit => {
-    editor: Js.Global.monaco.editor.create(Document.getElementById('editor'), {
-      value: "//Try loading a package below. Click on Save for transpiling.",
-      language: 'javascript'
-    });
-  };
+let onMonacoLoaded () => {
+  /* editor: Js.Global.monaco.editor.create(Document.getElementById('editor'), {
+       value: "//Try loading a package below. Click on Save for transpiling.",
+       language: 'javascript'
+     }); */
+};
 
 type state = {currentValue: string};
 
