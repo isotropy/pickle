@@ -19,7 +19,7 @@
   background-color: #888686;
 }
 
-.columns .file-tree {
+.columns .file-tree, .columns .settings {
   width: 20%;
   background-color: #4e4d4d;
 }

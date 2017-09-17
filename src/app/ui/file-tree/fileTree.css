@@ -1,7 +1,7 @@
-.settings{
+.file-tree{
     display: none;
 }
 
-.settings.active {
+.file-tree.active {
     display: block;
 }

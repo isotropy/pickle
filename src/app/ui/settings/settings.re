@@ -2,10 +2,10 @@
 
 let component = ReasonReact.statelessComponent "Settings";
 
-let make _children => {
+let make ::isActive _children => {
   ...component,
   render: fun _self =>
-    <div className="settings">
+    <div className=("settings" ^ (isActive == true ? " active" : ""))>
       <div> (ReasonReact.stringToElement "Settings") </div>
       <div> <button className="delete"> (ReasonReact.stringToElement "Delete") </button> </div>
     </div>

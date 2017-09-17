@@ -1,7 +1,7 @@
 [%bs.raw {|require('./app.css')|}];
 
 type action =
-  | SetActivePanel activePanel;
+  | SetActivePanel int;
 
 type state = {activePanel: int};
 
@@ -20,9 +20,9 @@ let make _children => {
     <div className="App">
       <div className="App-header"> <h2> (ReasonReact.stringToElement "Pickle") </h2> </div>
       <div className="columns">
-        <SideMenu setActive=(reduce (setActivePanel activePanel)) />
-        <Settings />
-        <FileTree />
+        <SideMenu setActive=(reduce setActivePanel) />
+        <FileTree isActive=(state.activePanel == 0) />
+        <Settings isActive=(state.activePanel == 1) />
         <Editor />
       </div>
     </div>
