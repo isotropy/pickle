@@ -12,6 +12,10 @@
               "subdirs": [ "editor", "file-tree", "side-menu", "settings" ]
             }
           ]
+        },
+        {
+          "dir": "ui-components",
+          "subdirs": [ "accordion" ]
         }
       ]
     }

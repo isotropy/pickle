@@ -1,4 +1,4 @@
-.App {
+.App .file-tree, .App .side-menu, .App-header {
     text-align: center;
   }
   
@@ -20,12 +20,12 @@
 }
 
 .columns .file-tree, .columns .settings {
-  width: 20%;
+  width: 15%;
   background-color: #4e4d4d;
 }
 
 .columns .editor {
-  width: 75%;
+  width: 80%;
   background-color: #3e3d3d;
 }
   

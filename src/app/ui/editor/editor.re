@@ -1,4 +1,10 @@
-open Bs_webapi.Dom;
+/* TODO: Replace interops */
+/* external monaco : 'anything => unit = "window.monaco" [@@bs.val]; */
+/* external require : 'anything => unit = "window.require" [@@bs.val]; */
+type state = {currentValue: string};
+
+type actions =
+  | Edit string;
 
 let loadMonacoEditor: unit => unit = [%bs.raw
   {|
@@ -6,39 +12,32 @@ let loadMonacoEditor: unit => unit = [%bs.raw
       var loaderScript = document.createElement('script');
       loaderScript.type = 'text/javascript';
       loaderScript.src = './vs/loader.js';
-
-      var loaderMainScript = document.createElement('script');
-      loaderMainScript.type = 'text/javascript';
-      loaderMainScript.src = './vs/loader.js';
-      loaderMainScript.addEventListener('load', onMonacoLoaded);
+      loaderScript.addEventListener('load', onMonacoLoaded);
       document.body.appendChild(loaderScript);
-      document.body.appendChild(loaderMainScript);
     }
   |}
 ];
 
-/*
- let onMonacoLoaded: unit => unit = [%bs.raw
-   {|
-     function onMonacoLoaded() {
-       this.editor = monaco.editor.create(document.getElementById('editor'), {
-         value: '//Try loading a package below. Click on Save for transpiling.',
-         language: 'javascript'
-       });
-     }
- |}
- ]; */
-let onMonacoLoaded () => {
-  /* editor: Js.Global.monaco.editor.create(Document.getElementById('editor'), {
-       value: "//Try loading a package below. Click on Save for transpiling.",
-       language: 'javascript'
-     }); */
+let onMonacoLoaded: unit => unit = [%bs.raw
+  {|
+        function onMonacoLoaded() {
+          window.require(['./vs/editor/editor.main'], () => {
+            let editor = monaco.editor.create(document.getElementById('editor'), {
+              value: '//Try loading a package below. Click on Save for transpiling.',
+              language: 'javascript',
+              theme: 'vs-dark'
+            });
+            onEditorMount(editor);
+          });
+        }
+    |}
+];
+
+let onEditorMount editor {ReasonReact.reduce: reduce} => {
+  let onDidChangeModelContent event => reduce (fun _ => Edit editor##getValue);
+  ()
+  /* editor##onDidChangeModelContent onDidChangeModelContent */
 };
-
-type state = {currentValue: string};
-
-type actions =
-  | Edit;
 
 let component = ReasonReact.reducerComponent "Editor";
 
@@ -51,10 +50,7 @@ let make _children => {
   },
   reducer: fun action state =>
     switch action {
-    | Edit => ReasonReact.Update {...state, currentValue: "nothing"}
+    | Edit value => ReasonReact.Update {...state, currentValue: value}
     },
-  render: fun {state, reduce} =>
-    <div id="editor" className="editor" onClick=(reduce (fun _ => Edit))>
-      (ReasonReact.stringToElement "Editor")
-    </div>
+  render: fun {state, reduce} => <div id="editor" className="editor" />
 };
