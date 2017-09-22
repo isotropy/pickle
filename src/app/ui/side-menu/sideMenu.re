@@ -9,12 +9,8 @@ let make ::setActive _children => {
     ...component,
     render: fun _self =>
       <div className="side-menu">
-        <div>
-          <button onClick=onFilesClicked> (ReasonReact.stringToElement "Files") </button>
-        </div>
-        <div>
-          <button onClick=onSettingsClicked> (ReasonReact.stringToElement "Settings") </button>
-        </div>
+        <div onClick=onFilesClicked> <img src="/files.svg" alt="Files" /> </div>
+        <div onClick=onSettingsClicked> <img src="/settings.svg" alt="Settings" /> </div>
       </div>
   }
 };

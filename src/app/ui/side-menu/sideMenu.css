@@ -1,5 +1,6 @@
-.side-menu button{
-    width: 50px;
-    height: 50px;
+.side-menu img{
+    width: 28px;
+    height: 28px;
     margin: 10px;
+    cursor: pointer;
 }
