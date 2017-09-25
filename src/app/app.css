@@ -14,18 +14,22 @@
   height: 100vh;
 }
 
-.columns .side-menu {
+.columns > .side-menu {
   width: 3%;
   background-color: #888686;
 }
 
-.columns .file-tree, .columns .settings {
+.columns > .file-tree, .columns > .settings {
   width: 15%;
   background-color: #4e4d4d;
 }
 
-.columns .editor {
-  width: 82%;
+.columns > .editor {
+  width: 41%;
   background-color: #3e3d3d;
+}
+
+.columns > .preview {
+  width: 41%;
 }
   

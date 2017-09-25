@@ -24,6 +24,7 @@ let make _children => {
         <FileTree isActive=(state.activePanel == 0) />
         <Settings isActive=(state.activePanel == 1) />
         <Editor />
+        <Preview />
       </div>
     </div>
 };

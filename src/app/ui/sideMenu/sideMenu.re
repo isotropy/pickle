@@ -9,8 +9,8 @@ let make ::setActive _children => {
     ...component,
     render: fun _self =>
       <div className="side-menu">
-        <div onClick=onFilesClicked> <img src="/files.svg" alt="Files" /> </div>
-        <div onClick=onSettingsClicked> <img src="/settings.svg" alt="Settings" /> </div>
+        <div className="files" onClick=onFilesClicked />
+        <div className="settings" onClick=onSettingsClicked />
       </div>
   }
 };

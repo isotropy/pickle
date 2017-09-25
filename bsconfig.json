@@ -9,7 +9,7 @@
           "subdirs": [
             {
               "dir": "ui",
-              "subdirs": [ "editor", "file-tree", "side-menu", "settings" ]
+              "subdirs": [ "editor", "fileTree", "sideMenu", "settings", "preview" ]
             }
           ]
         },
