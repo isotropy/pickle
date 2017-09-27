@@ -12,6 +12,10 @@ let component = ReasonReact.reducerComponent "App";
 let make _children => {
   ...component,
   initialState: fun () => {activePanel: 0},
+  didMount: fun state => {
+    Build.loadSystemJS ();
+    ReasonReact.NoUpdate
+  },
   reducer: fun action state =>
     switch action {
     | SetActivePanel panelNo => ReasonReact.Update {...state, activePanel: panelNo}

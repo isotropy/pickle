@@ -34,7 +34,7 @@ let onMonacoLoaded: unit => unit = [%bs.raw
 ];
 
 let onEditorMount editor {ReasonReact.reduce: reduce} => {
-  let onDidChangeModelContent event => reduce (fun _ => Edit editor##getValue);
+  let onDidChangeModelContent _event => reduce (fun _ => Edit editor##getValue);
   ()
   /* editor##onDidChangeModelContent onDidChangeModelContent */
 };
@@ -44,7 +44,7 @@ let component = ReasonReact.reducerComponent "Editor";
 let make _children => {
   ...component,
   initialState: fun () => {currentValue: ""},
-  didMount: fun self => {
+  didMount: fun _self => {
     loadMonacoEditor ();
     ReasonReact.NoUpdate
   },
@@ -52,5 +52,5 @@ let make _children => {
     switch action {
     | Edit value => ReasonReact.Update {...state, currentValue: value}
     },
-  render: fun {state, reduce} => <div id="editor" className="editor" />
+  render: fun _self => <div id="editor" className="editor" />
 };
