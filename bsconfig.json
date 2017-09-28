@@ -14,7 +14,7 @@
           ]
         },
         {
-          "dir": "ui-components",
+          "dir": "uiComponents",
           "subdirs": [ "accordion" ]
         }
       ]
