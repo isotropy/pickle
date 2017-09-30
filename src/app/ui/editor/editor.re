@@ -23,7 +23,7 @@ let onMonacoLoaded: unit => unit = [%bs.raw
         function onMonacoLoaded() {
           window.require(['./vs/editor/editor.main'], () => {
             let editor = monaco.editor.create(document.getElementById('editor'), {
-              value: '//Try loading a package below. Click on Save for transpiling.',
+              value: '<html>\n</html>',
               language: 'javascript',
               theme: 'vs-dark'
             });

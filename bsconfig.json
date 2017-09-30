@@ -8,6 +8,10 @@
           "dir": "app",
           "subdirs": [
             {
+              "dir": "services",
+              "subdirs": [ "fs" ]
+            },
+            {
               "dir": "ui",
               "subdirs": [ "editor", "fileTree", "sideMenu", "settings", "preview", "build" ]
             }
@@ -15,7 +19,7 @@
         },
         {
           "dir": "ui-components",
-          "subdirs": [ "accordion" ]
+          "subdirs": [ "accordion", "treeview" ]
         }
       ]
     }

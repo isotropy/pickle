@@ -1,5 +1,7 @@
 .file-tree{
     display: none;
+    padding: 5px;
+    color: darkgray;
 }
 
 .file-tree.active {
