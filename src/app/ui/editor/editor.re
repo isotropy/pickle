@@ -1,10 +1,31 @@
-/* TODO: Replace interops */
-/* external monaco : 'anything => unit = "window.monaco" [@@bs.val]; */
-/* external require : 'anything => unit = "window.require" [@@bs.val]; */
-type state = {currentValue: string};
+open MonacoEditor;
+
+external require : array string => 'anything => unit = "window.require" [@@bs.val];
+
+external getElementById : string => Dom.element = "document.getElementById" [@@bs.val];
 
 type actions =
   | Edit string;
+
+type state = {
+  currentValue: string,
+  editor: option MonacoEditor.t
+};
+
+let onContentChange editor {ReasonReact.state: state, ReasonReact.reduce: reduce} => {
+  let value = MonacoEditorInterface.getValue editor;
+  reduce (fun value => Edit value)
+};
+
+let onEditorLoaded {ReasonReact.state: state, ReasonReact.reduce: reduce} => {
+  let editor =
+    MonacoEditor.create
+      (getElementById "editor")
+      {value: "<html>\n</html>", language: "javascript", theme: "vs-dark"};
+  MonacoEditorInterface.onDidChangeModelContent editor (onContentChange editor)
+};
+
+let onMonacoLoaded () => require [|"./vs/editor/editor.main"|] onEditorLoaded;
 
 let loadMonacoEditor: unit => unit = [%bs.raw
   {|
@@ -18,32 +39,11 @@ let loadMonacoEditor: unit => unit = [%bs.raw
   |}
 ];
 
-let onMonacoLoaded: unit => unit = [%bs.raw
-  {|
-        function onMonacoLoaded() {
-          window.require(['./vs/editor/editor.main'], () => {
-            let editor = monaco.editor.create(document.getElementById('editor'), {
-              value: '<html>\n</html>',
-              language: 'javascript',
-              theme: 'vs-dark'
-            });
-            onEditorMount(editor);
-          });
-        }
-    |}
-];
-
-let onEditorMount editor {ReasonReact.reduce: reduce} => {
-  let onDidChangeModelContent _event => reduce (fun _ => Edit editor##getValue);
-  ()
-  /* editor##onDidChangeModelContent onDidChangeModelContent */
-};
-
 let component = ReasonReact.reducerComponent "Editor";
 
 let make _children => {
   ...component,
-  initialState: fun () => {currentValue: ""},
+  initialState: fun () => {currentValue: "", editor: None},
   didMount: fun _self => {
     loadMonacoEditor ();
     ReasonReact.NoUpdate
