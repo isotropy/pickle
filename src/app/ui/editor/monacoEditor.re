@@ -1,15 +1,18 @@
-type t;
-
-type editorInit = {
-  value: string,
-  language: string,
-  theme: string
-};
-
 external monaco : 'anything => unit = "window.monaco" [@@bs.val];
 
-external create : Dom.element => editorInit => t = "" [@@bs.scope "editor"] [@@bs.val "monaco"];
+module MonacoEditorInterface = {
+  type t;
+  external getValue : option t => string = "" [@@bs.send];
+  external onDidChangeModelContent : option t => 'anything => unit = "" [@@bs.send];
+};
 
-external onDidChangeModelContent : t => unit = "" [@@bs.val];
-
-external getValue : t => string = "" [@@bs.get];
+module MonacoEditor = {
+  type t;
+  type editorInit = {
+    value: string,
+    language: string,
+    theme: string
+  };
+  external create : Dom.element => editorInit => option MonacoEditorInterface.t =
+    "" [@@bs.val "monaco.editor.create"];
+};

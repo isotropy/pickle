@@ -1,4 +1,6 @@
-external require : list string => 'anything => unit = "window.require" [@@bs.val];
+open MonacoEditor;
+
+external require : array string => 'anything => unit = "window.require" [@@bs.val];
 
 external getElementById : string => Dom.element = "document.getElementById" [@@bs.val];
 
@@ -7,23 +9,23 @@ type actions =
 
 type state = {
   currentValue: string,
-  editor: ref (option MonacoEditor.t)
+  editor: option MonacoEditor.t
 };
 
-let onDidChangeModelContent _event {ReasonReact.state: state, ReasonReact.reduce: reduce} =>
-  reduce (fun _ => Edit state.editor.getValue);
-
-let onEditorLoaded {ReasonReact.state: state} => {
-  state.editor :=
-    Some (
-      MonacoEditor.create
-        (getElementById "editor")
-        {value: "<html>\n</html>", language: "javascript", theme: "vs-dark"}
-    );
-  state.editor.onDidChangeModelContent onDidChangeModelContent
+let onContentChange editor {ReasonReact.state: state, ReasonReact.reduce: reduce} => {
+  let value = MonacoEditorInterface.getValue editor;
+  reduce (fun value => Edit value)
 };
 
-let onMonacoLoaded () => require ["./vs/editor/editor.main"] onEditorLoaded;
+let onEditorLoaded {ReasonReact.state: state, ReasonReact.reduce: reduce} => {
+  let editor =
+    MonacoEditor.create
+      (getElementById "editor")
+      {value: "<html>\n</html>", language: "javascript", theme: "vs-dark"};
+  MonacoEditorInterface.onDidChangeModelContent editor (onContentChange editor)
+};
+
+let onMonacoLoaded () => require [|"./vs/editor/editor.main"|] onEditorLoaded;
 
 let loadMonacoEditor: unit => unit = [%bs.raw
   {|
@@ -41,7 +43,7 @@ let component = ReasonReact.reducerComponent "Editor";
 
 let make _children => {
   ...component,
-  initialState: fun () => {currentValue: "", editor: ref None},
+  initialState: fun () => {currentValue: "", editor: None},
   didMount: fun _self => {
     loadMonacoEditor ();
     ReasonReact.NoUpdate
