@@ -1,37 +1,49 @@
-type bundle = string;
+module SystemJS = {
+  type t;
+};
 
-external systemJS : 'anything => unit = "window.SystemJS" [@@bs.val];
+module SystemConfig = {
+  type t;
+  type plugins = {
+    pluginBabel: string,
+    systemjsBabelBuild: string
+  };
+  type extensions = {defaultExtension: string};
+  /* type packages = {. / : Js.t {. defaultExtension : string } }; */
+  /* TODO: packages with slash path? */
+  type config = {
+    map: plugins,
+    transpiler: string
+  };
+  external setConfig : SystemJS.t => config => unit = "config" [@@bs.send];
+  external import : SystemJS.t => string => unit = "" [@@bs.send];
+};
+
+external systemJS : SystemJS.t = "window.SystemJS" [@@bs.val];
+
+let setConfig () =>
+  SystemConfig.setConfig
+    systemJS
+    {
+      map: {
+        pluginBabel: "./plugins/plugin-babel.js",
+        systemjsBabelBuild: "./plugins/systemjs-babel-browser.js"
+      },
+      transpiler: "pluginBabel"
+    };
+
+let onSystemJSLoaded () => setConfig ();
 
 let loadSystemJS: unit => unit = [%bs.raw
   {|
-     function loadSystemJS() {
-       var loaderScript = document.createElement('script');
-       loaderScript.type = 'text/javascript';
-       loaderScript.src = './systemjs/system.js';
-       loaderScript.addEventListener('load', onSystemJSLoaded);
-       document.body.appendChild(loaderScript);
-     }
-   |}
+      function loadSystemJS() {
+        var loaderScript = document.createElement('script');
+        loaderScript.type = 'text/javascript';
+        loaderScript.src = './systemjs/system.js';
+        loaderScript.addEventListener('load', onSystemJSLoaded);
+        document.body.appendChild(loaderScript);
+      }
+    |}
 ];
 
-let onSystemJSLoaded: unit => unit = [%bs.raw
-  {|
-  function onSystemJSLoaded() {
-    let systemJSConfig = SystemJS.config;
-    setConfig(systemJSConfig);
-  }
-  |}
-];
-
-let setConfig config =>
-  config {
-    "map": {
-      "resolve": "/plugin-resolve/plugin-resolve.js",
-      "plugin-babel": "/plugin-babel/plugin-babel.js",
-      "systemjs-babel-build": "/plugin-babel/systemjs-babel-browser.js"
-    },
-    "packages": {"/": {defaultExtension: "js"}},
-    "transpiler": "plugin-babel"
-  };
-
-let getBundle entry => Js.log entry;
+let getBundle entry => SystemConfig.import systemJS entry;
