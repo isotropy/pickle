@@ -1,5 +1,6 @@
 .settings{
     display: none;
+    padding: 5px;
 }
 
 .settings.active {
