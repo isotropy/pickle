@@ -8,11 +8,7 @@ module MonacoEditorInterface = {
 
 module MonacoEditor = {
   type t;
-  type editorInit = {
-    value: string,
-    language: string,
-    theme: string
-  };
-  external create : Dom.element => editorInit => option MonacoEditorInterface.t =
+  type options = Js.t {. value : string, language : string, theme : string};
+  external create : Dom.element => options => option MonacoEditorInterface.t =
     "" [@@bs.val "monaco.editor.create"];
 };

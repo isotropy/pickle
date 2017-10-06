@@ -4,7 +4,7 @@ external require : array string => 'anything => unit = "window.require" [@@bs.va
 
 external getElementById : string => Dom.element = "document.getElementById" [@@bs.val];
 
-type actions =
+type action =
   | Edit string;
 
 type state = {
@@ -12,28 +12,28 @@ type state = {
   editor: option MonacoEditor.t
 };
 
-let onContentChange editor {ReasonReact.state: state, ReasonReact.reduce: reduce} => {
+let onContentChange editor {ReasonReact.state: state, ReasonReact.reduce: reduce} changes => {
   let value = MonacoEditorInterface.getValue editor;
-  reduce (fun value => Edit value)
+  reduce (fun value => Edit value) /* TODO: How do we access self.ReasonReact.reduce here? */
 };
 
-let onEditorLoaded {ReasonReact.state: state, ReasonReact.reduce: reduce} => {
-  let editor =
-    MonacoEditor.create
-      (getElementById "editor")
-      {value: "<html>\n</html>", language: "javascript", theme: "vs-dark"};
-  MonacoEditorInterface.onDidChangeModelContent editor (onContentChange editor)
+let onEditorLoaded self => {
+  let options: MonacoEditor.options = {
+    "value": "<html>\n</html>",
+    "language": "javascript",
+    "theme": "vs-dark"
+  };
+  let editor = MonacoEditor.create (getElementById "editor") options;
+  MonacoEditorInterface.onDidChangeModelContent editor (onContentChange editor self)
 };
 
-let onMonacoLoaded () => require [|"./vs/editor/editor.main"|] onEditorLoaded;
-
-let loadMonacoEditor: unit => unit = [%bs.raw
+let loadMonacoEditor: (unit => unit) => unit = [%bs.raw
   {|
-    function loadMonacoEditor() {
+    function loadMonacoEditor(callback) {
       var loaderScript = document.createElement('script');
       loaderScript.type = 'text/javascript';
       loaderScript.src = './vs/loader.js';
-      loaderScript.addEventListener('load', onMonacoLoaded);
+      loaderScript.addEventListener('load', callback);
       document.body.appendChild(loaderScript);
     }
   |}
@@ -41,16 +41,24 @@ let loadMonacoEditor: unit => unit = [%bs.raw
 
 let component = ReasonReact.reducerComponent "Editor";
 
+let edit value => Edit value;
+
 let make _children => {
-  ...component,
-  initialState: fun () => {currentValue: "", editor: None},
-  didMount: fun _self => {
-    loadMonacoEditor ();
-    ReasonReact.NoUpdate
-  },
-  reducer: fun action state =>
-    switch action {
-    | Edit value => ReasonReact.Update {...state, currentValue: value}
+  let onMonacoLoaded event self =>
+    require
+      [|"./vs/editor/editor.main"|]
+      onEditorLoaded; /* TODO: Can self be passed to this callback? Call/Apply? */
+  {
+    ...component,
+    initialState: fun () => {currentValue: "", editor: None},
+    didMount: fun self => {
+      loadMonacoEditor (self.handle onMonacoLoaded);
+      ReasonReact.NoUpdate
     },
-  render: fun _self => <div id="editor" className="editor" />
+    reducer: fun action state =>
+      switch action {
+      | Edit value => ReasonReact.Update {...state, currentValue: value}
+      },
+    render: fun _self => <div id="editor" className="editor" />
+  }
 };
