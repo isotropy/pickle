@@ -8,6 +8,7 @@ module MonacoEditorInterface = {
   type t;
   external getValue : option t => string = "" [@@bs.send];
   external onDidChangeModelContent : option t => 'anything => unit = "" [@@bs.send];
+  external setModel : option t => monacoModel => unit = "" [@@bs.send];
 };
 
 module MonacoEditor = {
