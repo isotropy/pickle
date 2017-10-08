@@ -16,7 +16,7 @@ let make ::isActive _children => {
   ...component,
   initialState: fun () => {
     fs: Fs.fileSystem,
-    activeFile: {dir: "", filename: "", contents: Fs.String ""}
+    activeFile: {id: 0, dir: "", filename: "", contents: Fs.String ""}
   },
   reducer: fun action state =>
     switch action {
@@ -29,9 +29,10 @@ let make ::isActive _children => {
         (
           fun fsItem => {
             let currentItem: Fs.file = fsItem;
+            let fileName: string = currentItem.filename;
             let contents: Fs.contents = fsItem.contents;
             switch contents {
-            | Fs.String string => <File filename=string file=currentItem />
+            | Fs.String string => <File filename=fileName file=currentItem />
             | Fs.List list => <Directory />
             }
           }
