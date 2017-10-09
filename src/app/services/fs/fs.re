@@ -15,7 +15,8 @@ let fileSystem = [
     id: 1,
     dir: "/",
     filename: "index.js",
-    contents: String "export default class Test {print() {console.log('printed')};}"
+    contents:
+      String "import Module1 from 'module1';\nexport default class Test {\nprint() {\nconsole.log('printed')};\n}"
   },
   {
     id: 2,

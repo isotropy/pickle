@@ -13,7 +13,7 @@ module MonacoEditorInterface = {
 
 module MonacoEditor = {
   type t;
-  type options = Js.t {. value : string, language : string, theme : string};
+  type options = Js.t {. language : string, theme : string};
   type uriScheme = string;
   type uriAuthority = string;
   type uriPath = string;
