@@ -1,6 +1,6 @@
 external monaco : 'anything => unit = "window.monaco" [@@bs.val];
 
-type monacoModel = {id: int};
+type monacoModel = {path: string};
 
 type monacoModels = list monacoModel;
 

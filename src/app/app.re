@@ -2,14 +2,14 @@
 
 type action =
   | SetActivePanel int
-  | SetActiveFile Fs.file;
+  | SetActiveFile string;
 
 type state = {
   activePanel: int,
-  activeFile: int
+  activeFile: string
 };
 
-let setActiveFile activeFileId => SetActiveFile activeFileId;
+let setActiveFile activeFilePath => SetActiveFile activeFilePath;
 
 let setActivePanel activePanel => SetActivePanel activePanel;
 
@@ -17,7 +17,7 @@ let component = ReasonReact.reducerComponent "App";
 
 let make _children => {
   ...component,
-  initialState: fun () => {activePanel: 0, activeFile: 1},
+  initialState: fun () => {activePanel: 0, activeFile: "index.js"},
   didMount: fun state => {
     Build.loadSystemJS ();
     ReasonReact.NoUpdate
@@ -25,7 +25,7 @@ let make _children => {
   reducer: fun action state =>
     switch action {
     | SetActivePanel panelNo => ReasonReact.Update {...state, activePanel: panelNo}
-    | SetActiveFile fileId => ReasonReact.Update {...state, activeFile: fileId}
+    | SetActiveFile filePath => ReasonReact.Update {...state, activeFile: filePath}
     },
   render: fun {state, reduce} =>
     <div className="App">

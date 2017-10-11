@@ -8,16 +8,16 @@ type action =
   | Edit string
   | SetEditor (option MonacoEditorInterface.t)
   | AddModel monacoModel
-  | UpdateModel monacoModel
-  | SetModel int;
+  | UpdateModel monacoModel;
 
+/* | SetModel int; */
 type retainedProps = {activeModel: int};
 
 type state = {
   currentValue: string,
   editor: option MonacoEditorInterface.t,
-  models: option monacoModels,
-  activeModel: int
+  models: option monacoModels
+  /* activeModel: int */
 };
 
 let edit value => Edit value;
@@ -28,12 +28,21 @@ let addModel model => AddModel model;
 
 let updateModel editorModel => UpdateModel editorModel;
 
-let setModel modelId => SetModel modelId;
-
+/* let setModel modelId => SetModel modelId; */
 let setEditorModel editor models activeModel => {
   let model: option monacoModel =
     switch models {
-    | Some models => Some (List.find (fun model => model.id === activeModel) models)
+    | Some models =>
+      Some (
+        List.find
+          (
+            fun model => {
+              Js.log model;
+              model.path === activeModel
+            }
+          )
+          models
+      )
     | None => None
     };
   MonacoEditorInterface.setModel editor model
@@ -56,10 +65,10 @@ let loadModels editor {ReasonReact.reduce: reduce, ReasonReact.state: state} =>
           };
         let uri: MonacoEditor.uri = MonacoEditor.uri "file" "" path "";
         let editorModel = MonacoEditor.createModel content "javascript" uri;
-        if (modelId === 1) {
-          /* To set first file on editor by default */
-          reduce setModel 1
-        };
+        /* if (modelId === 1) {
+             /* To set first file on editor by default */
+             reduce setModel 1
+           }; */
         reduce addModel editorModel
       }
     )
@@ -113,10 +122,10 @@ let make ::activeModel _children => {
       switch action {
       | Edit value => ReasonReact.Update {...state, currentValue: value}
       | SetEditor editor => ReasonReact.Update {...state, editor}
-      | SetModel modelId =>
-        ReasonReact.UpdateWithSideEffects
-          {...state, activeModel: modelId}
-          (fun {ReasonReact.state: state} => setEditorModel state.editor state.models modelId)
+      /* | SetModel modelId =>
+         ReasonReact.UpdateWithSideEffects
+           {...state, activeModel: modelId}
+           (fun {ReasonReact.state: state} => setEditorModel state.editor state.models modelId) */
       | AddModel model =>
         let newModels: monacoModels =
           switch state.models {

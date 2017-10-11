@@ -1,24 +1,11 @@
 [%bs.raw {|require('./fileTree.css')|}];
 
-type state = {fs: Fs.fileSystem};
-
-let component = ReasonReact.reducerComponent "FileTree";
+let component = ReasonReact.statelessComponent "FileTree";
 
 let make ::isActive ::setActiveFile _children => {
   ...component,
-  initialState: fun () => {
-    fs: Fs.fileSystem,
-    activeFile: {id: 0, dir: "", filename: "", contents: Fs.String ""}
-  },
-  reducer: fun action state =>
-    switch action {
-    | SetActiveFile file =>
-      ReasonReact.UpdateWithSideEffects
-        {...state, activeFile: file}
-        (fun {ReasonReact.reduce: reduce} => reduce Editor.setModel activeFileId)
-    },
   render: fun {state, reduce} => {
-    let {fs} = state;
+    let fs = Fs.fileSystem;
     let fsItems =
       List.map
         (
@@ -27,7 +14,12 @@ let make ::isActive ::setActiveFile _children => {
             let fileName: string = currentItem.filename;
             let contents: Fs.contents = fsItem.contents;
             switch contents {
-            | Fs.String string => <File filename=fileName file=currentItem setActiveFile />
+            | Fs.String string =>
+              <File
+                filename=fileName
+                file=currentItem
+                setActiveFile=(fun _ => setActiveFile fileName)
+              />
             | Fs.List list => <Directory />
             }
           }
