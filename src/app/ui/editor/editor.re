@@ -88,7 +88,7 @@ let component = ReasonReact.reducerComponent "Editor";
 
 let make _children => {
   let onMonacoLoaded event self =>
-    require [|"./vs/editor/editor.main"|] (fun () => onEditorLoaded self);
+    require [|"/vs/editor/editor.main"|] (fun () => onEditorLoaded self);
   {
     ...component,
     initialState: fun () => {currentValue: "", editor: None, models: None, activeModel: 1},
